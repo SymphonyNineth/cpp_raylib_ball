@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include <iostream>
 #include <functional>
+#include <random>
 
 class GeometricalObject
 {
@@ -14,7 +15,7 @@ public:
 
   Vector2 GetCenter() const
   {
-    return {x, y};
+    return {static_cast<float>(x), static_cast<float>(y)};
   }
 
   void GoTo(int newX, int newY)
@@ -80,7 +81,12 @@ public:
 
   Rectangle GetRect() const
   {
-    return {x, y, width, height};
+    return {
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(width),
+        static_cast<float>(height),
+    };
   }
 
   void Fall()
@@ -93,15 +99,23 @@ public:
     direction = newDirection;
   }
 
+  int getRandomPosition(int windowWidth)
+  {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, windowWidth);
+    return dis(gen);
+  }
+
   void Reset(int windowWidth, int windowHeight)
   {
-    x = rand() % (windowWidth - width) + width;
+    x = getRandomPosition(windowWidth);
     y = height;
   }
 
   void Reverse(int windowWidth)
   {
-    x = rand() % (windowWidth - width) + width;
+    x = getRandomPosition(windowWidth);
     direction = -direction;
   }
 };
